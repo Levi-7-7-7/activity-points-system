@@ -1,4 +1,3 @@
-// pages/StudentDetail.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -8,14 +7,16 @@ const StudentDetail = () => {
   const [certs, setCerts] = useState([]);
   const [student, setStudent] = useState(null);
 
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
   useEffect(() => {
     const fetchCerts = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/certificates/student/${id}`,
+          `${apiBaseUrl}/api/certificates/student/${id}`,
           {
             headers: {
-              Authorization: localStorage.getItem('token'),
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
           }
         );
@@ -28,7 +29,7 @@ const StudentDetail = () => {
     };
 
     fetchCerts();
-  }, [id]);
+  }, [id, apiBaseUrl]);
 
   return (
     <div style={styles.container}>

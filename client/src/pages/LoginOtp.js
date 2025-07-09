@@ -10,37 +10,41 @@ const LoginOtp = () => {
 
   const handleSendOtp = async () => {
     try {
-      // ✅ Must send both email AND password
-      await axios.post('http://localhost:5000/api/auth/login', {
+      // ✅ Use environment variable for API base URL
+      const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
+      await axios.post(`${apiBaseUrl}/api/auth/login`, {
         email,
-        password
+        password,
       });
 
-      // ✅ Save email for next step (OTP verify)
+      // ✅ Save email for next step (OTP verification)
       localStorage.setItem('otpEmail', email);
 
       alert('OTP sent to email');
       navigate('/verify-otp');
     } catch (err) {
-      console.log(err.response);
+      console.error(err.response);
       alert(err.response?.data?.msg || 'Failed to send OTP');
     }
   };
 
   return (
-    <div>
+    <div className="form-box">
       <h2>Login via Email OTP</h2>
       <input
         placeholder="Email"
         type="email"
         value={email}
         onChange={e => setEmail(e.target.value)}
+        required
       /><br />
       <input
         placeholder="Password"
         type="password"
         value={password}
         onChange={e => setPassword(e.target.value)}
+        required
       /><br />
       <button onClick={handleSendOtp}>Send OTP</button>
     </div>

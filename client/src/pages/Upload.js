@@ -8,6 +8,8 @@ const Upload = () => {
     file: null
   });
 
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
   const handleChange = e => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
@@ -32,10 +34,10 @@ const Upload = () => {
     formData.append('file', form.file);
 
     try {
-      await axios.post('http://localhost:5000/api/certificates/upload', formData, {
+      await axios.post(`${apiBaseUrl}/api/certificates/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
       });
 

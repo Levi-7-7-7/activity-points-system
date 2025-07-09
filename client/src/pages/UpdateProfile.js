@@ -7,18 +7,23 @@ const UpdateProfile = () => {
   const [registerNumber, setRegisterNumber] = useState('');
   const navigate = useNavigate();
 
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put('http://localhost:5000/api/users/update-profile', {
-        rollNumber,
-        registerNumber,
-      }, {
-        headers: { Authorization: localStorage.getItem('token') }
-      });
+      await axios.put(
+        `${apiBaseUrl}/api/users/update-profile`,
+        { rollNumber, registerNumber },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
 
       alert('Profile updated!');
-      navigate('/dashboard'); 
+      navigate('/dashboard');
     } catch (err) {
       alert(err.response?.data?.msg || 'Update failed');
     }

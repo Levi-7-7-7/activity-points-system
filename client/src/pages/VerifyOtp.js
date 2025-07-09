@@ -7,9 +7,12 @@ const VerifyOtp = () => {
   const email = localStorage.getItem('otpEmail');
   const navigate = useNavigate();
 
+  // Use environment variable for API base URL
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
   const handleVerify = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/verify-otp', { email, otp });
+      const res = await axios.post(`${apiBaseUrl}/api/auth/verify-otp`, { email, otp });
       alert(res.data.msg || 'OTP verified!');
       navigate('/login');
     } catch (err) {

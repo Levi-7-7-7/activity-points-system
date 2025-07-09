@@ -1,16 +1,16 @@
-// pages/Notifications.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const Notifications = () => {
   const [certs, setCerts] = useState([]);
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
   const fetchCertificates = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/certificates/pending', {
+      const res = await axios.get(`${apiBaseUrl}/api/certificates/pending`, {
         headers: {
-          Authorization: localStorage.getItem('token')
-        }
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
       setCerts(res.data);
     } catch (err) {
@@ -25,12 +25,12 @@ const Notifications = () => {
   const handleAction = async (id, action, comment) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/certificates/review/${id}`,
+        `${apiBaseUrl}/api/certificates/review/${id}`,
         { action, comment },
         {
           headers: {
-            Authorization: localStorage.getItem('token')
-          }
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
         }
       );
       alert(`Certificate ${action}d successfully`);
@@ -59,24 +59,32 @@ const Notifications = () => {
             </tr>
           </thead>
           <tbody>
-            {certs.map(cert => (
+            {certs.map((cert) => (
               <tr key={cert._id}>
-                <td>{cert.student.name} ({cert.student.email})</td>
+                <td>
+                  {cert.student.name} ({cert.student.email})
+                </td>
                 <td>{cert.title}</td>
                 <td>{cert.level}</td>
                 <td>
-                  <a href={cert.fileUrl} target="_blank" rel="noopener noreferrer">View</a>
+                  <a href={cert.fileUrl} target="_blank" rel="noopener noreferrer">
+                    View
+                  </a>
                 </td>
                 <td>
                   <input
                     type="text"
                     placeholder="Add comment"
-                    onChange={e => cert.comment = e.target.value}
+                    onChange={(e) => (cert.comment = e.target.value)}
                   />
                 </td>
                 <td>
-                  <button onClick={() => handleAction(cert._id, 'approve', cert.comment || '')}>✅ Approve</button>
-                  <button onClick={() => handleAction(cert._id, 'reject', cert.comment || '')}>❌ Reject</button>
+                  <button onClick={() => handleAction(cert._id, 'approve', cert.comment || '')}>
+                    ✅ Approve
+                  </button>
+                  <button onClick={() => handleAction(cert._id, 'reject', cert.comment || '')}>
+                    ❌ Reject
+                  </button>
                 </td>
               </tr>
             ))}

@@ -6,6 +6,7 @@ server/node_modules/
 # Build output
 client/build/
 dist/
+server/uploads/
 
 # Logs
 npm-debug.log*

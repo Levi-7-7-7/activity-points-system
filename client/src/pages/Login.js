@@ -14,10 +14,10 @@ const Login = () => {
     try {
       console.log('Form Data:', JSON.stringify(form, null, 2));
 
-      const res = await axios.post(
-        'http://localhost:5000/api/auth/login',
-        form
-      );
+      // Use environment variable for API base URL
+      const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
+      const res = await axios.post(`${apiBaseUrl}/api/auth/login`, form);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('role', res.data.user.role);
       alert('Login successful!');

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -13,6 +13,7 @@ const Register = () => {
   });
 
   const navigate = useNavigate();
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,7 +34,7 @@ const Register = () => {
         dataToSend.rollNumber = form.rollNumber;
       }
 
-      await axios.post('http://localhost:5000/api/auth/register', dataToSend);
+      await axios.post(`${apiBaseUrl}/api/auth/register`, dataToSend);
 
       localStorage.setItem('otpEmail', form.email);
       alert('OTP sent to your email');
@@ -105,7 +106,12 @@ const Register = () => {
       )}
 
       <button onClick={handleRegister}>Send OTP</button>
-      <a href="/login">Already have an account? Login</a>
+
+      {/* ✅ Use Link instead of <a href> */}
+      <p>
+        Already have an account?{' '}
+        <Link to="/login">Login</Link>
+      </p>
     </div>
   );
 };

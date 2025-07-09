@@ -5,17 +5,22 @@ const Dashboard = () => {
   const [certs, setCerts] = useState([]);
   const [totalPoints, setTotalPoints] = useState(0);
 
+  // Set base URL depending on environment
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
   useEffect(() => {
     const fetchCertificates = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/api/certificates/my-certificates', {
-          headers: { Authorization: `Bearer ${token}` }
+        const res = await axios.get(`${apiBaseUrl}/api/certificates/my-certificates`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         setCerts(res.data);
-        const points = res.data.reduce((acc, cert) =>
-          cert.status === 'approved' ? acc + cert.points : acc, 0);
+        const points = res.data.reduce(
+          (acc, cert) => (cert.status === 'approved' ? acc + cert.points : acc),
+          0
+        );
         setTotalPoints(points);
       } catch (err) {
         alert(err.response?.data?.msg || 'Failed to load certificates');
@@ -23,23 +28,25 @@ const Dashboard = () => {
     };
 
     fetchCertificates();
-  }, []);
+  }, [apiBaseUrl]);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this certificate?')) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/certificates/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      await axios.delete(`${apiBaseUrl}/api/certificates/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
 
       alert('Certificate deleted');
 
-      const updatedCerts = certs.filter(c => c._id !== id);
+      const updatedCerts = certs.filter((c) => c._id !== id);
       setCerts(updatedCerts);
 
-      const updatedPoints = updatedCerts.reduce((acc, c) =>
-        c.status === 'approved' ? acc + c.points : acc, 0);
+      const updatedPoints = updatedCerts.reduce(
+        (acc, c) => (c.status === 'approved' ? acc + c.points : acc),
+        0
+      );
       setTotalPoints(updatedPoints);
     } catch (err) {
       alert(err.response?.data?.msg || 'Delete failed');
@@ -51,9 +58,12 @@ const Dashboard = () => {
       <h2>📊 My Activity Dashboard</h2>
 
       <div className="summary">
-        <p><strong>Total Points:</strong> {totalPoints}</p>
+        <p>
+          <strong>Total Points:</strong> {totalPoints}
+        </p>
         <p className={totalPoints >= 60 ? 'status eligible' : 'status not-eligible'}>
-          <strong>Status:</strong> {totalPoints >= 60 ? 'Eligible for Diploma' : 'Not Eligible Yet'}
+          <strong>Status:</strong>{' '}
+          {totalPoints >= 60 ? 'Eligible for Diploma' : 'Not Eligible Yet'}
         </p>
       </div>
 
@@ -76,19 +86,23 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {certs.map(cert => (
+              {certs.map((cert) => (
                 <tr key={cert._id}>
                   <td>{cert.title}</td>
                   <td>{cert.level}</td>
                   <td>{cert.status}</td>
                   <td>{cert.points}</td>
                   <td>
-                    <a href={cert.fileUrl} target="_blank" rel="noopener noreferrer">📄 View</a>
+                    <a href={cert.fileUrl} target="_blank" rel="noopener noreferrer">
+                      📄 View
+                    </a>
                   </td>
                   <td>{cert.tutorComment || '-'}</td>
                   <td>
                     {cert.status === 'pending' && (
-                      <button className="small-btn" onClick={() => handleDelete(cert._id)}>🗑️ Delete</button>
+                      <button className="small-btn" onClick={() => handleDelete(cert._id)}>
+                        🗑️ Delete
+                      </button>
                     )}
                   </td>
                 </tr>

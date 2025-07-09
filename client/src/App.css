@@ -194,3 +194,20 @@ a:hover {
 .form-box a:hover {
   text-decoration: underline;
 }
+/* === Logout Button Styles === */
+.logout-btn {
+  background-color: #f44336;   /* Red */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* ✅ Stronger selector to override unwanted hover styles */
+.navbar-right button.logout-btn:hover {
+  background-color: #d32f2f;   /* Darker Red */
+  color: white;
+}

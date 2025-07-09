@@ -10,14 +10,21 @@ const StudentList = () => {
   const [students, setStudents] = useState([]);
   const navigate = useNavigate();
 
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/users/all-students', {
-          headers: { Authorization: localStorage.getItem('token') }
+        const res = await axios.get(`${apiBaseUrl}/api/users/all-students`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
         });
 
-        const sorted = res.data.sort((a, b) => (a.rollNumber || '').localeCompare(b.rollNumber || ''));
+        const sorted = res.data.sort((a, b) =>
+          (a.rollNumber || '').localeCompare(b.rollNumber || '')
+        );
+
         setStudents(sorted);
       } catch (err) {
         console.error('Error fetching students:', err);
@@ -26,19 +33,17 @@ const StudentList = () => {
     };
 
     fetchStudents();
-  }, []);
+  }, [apiBaseUrl]);
 
   const handleDownloadExcel = () => {
-    const data = students.map((s) => {
-      return {
-        Name: s.name,
-        RollNumber: s.rollNumber || '',
-        RegisterNumber: s.registerNumber || '',
-        Email: s.email,
-        TotalPoints: s.totalPoints || 0,
-        Eligible: s.totalPoints >= 60 ? 'Yes' : 'No'
-      };
-    });
+    const data = students.map((s) => ({
+      Name: s.name,
+      RollNumber: s.rollNumber || '',
+      RegisterNumber: s.registerNumber || '',
+      Email: s.email,
+      TotalPoints: s.totalPoints || 0,
+      Eligible: s.totalPoints >= 60 ? 'Yes' : 'No'
+    }));
 
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
@@ -59,7 +64,6 @@ const StudentList = () => {
 
     students.forEach((student) => {
       const eligible = (student.totalPoints || 0) >= 60 ? "Yes" : "No";
-
       tableRows.push([
         student.rollNumber || "-",
         student.registerNumber || "-",
@@ -109,7 +113,7 @@ const StudentList = () => {
               <td colSpan="6" align="center">No students found.</td>
             </tr>
           ) : (
-            students.map(std => (
+            students.map((std) => (
               <tr key={std._id}>
                 <td>{std.rollNumber || '-'}</td>
                 <td>{std.registerNumber || '-'}</td>
