@@ -28,7 +28,7 @@ app.use('/api/certificates', require('./routes/certificates'));
 const buildPath = path.join(__dirname, '../client/build');
 app.use(express.static(buildPath));
 
-// ✅ Wildcard route to serve React index.html
+// ✅ Safe wildcard for all non-API routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'));
 });
