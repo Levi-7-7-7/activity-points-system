@@ -28,8 +28,8 @@ app.use('/api/certificates', require('./routes/certificates'));
 const buildPath = path.join(__dirname, '../client/build');
 app.use(express.static(buildPath));
 
-// ✅ FIXED: Safe wildcard route (no regex)
-app.get('*', (req, res) => {
+// ✅ Wildcard route (exclude /api)
+app.get(/^\/(?!api).*/, (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'));
 });
 
