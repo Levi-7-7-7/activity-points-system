@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    unique: true,
+    unique: true, // ✅ Email must be unique
     required: true,
     lowercase: true,
     trim: true
@@ -27,10 +27,12 @@ const userSchema = new mongoose.Schema({
     default: 0
   },
   registerNumber: {
-    type: String // ❌ No "required" here; handled in controller
+    type: String, // ✅ No unique, no required
+    default: null
   },
   rollNumber: {
-    type: String // ❌ No "required" here; handled in controller
+    type: String, // ✅ No unique, no required
+    default: null
   }
 }, {
   timestamps: true
