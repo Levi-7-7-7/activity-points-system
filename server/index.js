@@ -29,9 +29,11 @@ const buildPath = path.join(__dirname, '../client/build');
 app.use(express.static(buildPath));
 
 // ✅ Wildcard route to serve index.html for any route not starting with /api
-app.get('*', (req, res) => {
+// FIXED
+app.get('/*', (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'));
 });
+
 
 // ===== Start Server =====
 const PORT = process.env.PORT || 5000;
