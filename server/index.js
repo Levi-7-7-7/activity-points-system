@@ -7,32 +7,33 @@ const path = require("path");
 
 const app = express();
 
-// Middleware
+// ===== Middleware =====
 app.use(cors());
 app.use(express.json());
 
-// Serve static certificate uploads
+// ===== Serve uploaded certificate files =====
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// MongoDB connection
+// ===== MongoDB Connection =====
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// API Routes
+// ===== API Routes =====
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/certificates', require('./routes/certificates'));
 
-// ✅ Serve React frontend (from client/build)
+// ===== Serve React Frontend from client/build =====
 const buildPath = path.join(__dirname, '../client/build');
 app.use(express.static(buildPath));
 
+// ✅ Wildcard route to serve index.html for any route not starting with /api
 app.get('*', (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'));
 });
 
-// Start server
+// ===== Start Server =====
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
