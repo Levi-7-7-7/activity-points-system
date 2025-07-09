@@ -27,19 +27,13 @@ const userSchema = new mongoose.Schema({
     default: 0
   },
   registerNumber: {
-    type: String,
-    required: function () {
-      return this.role === 'student';
-    }
+    type: String // ❌ No "required" here; handled in controller
   },
   rollNumber: {
-    type: String,
-    required: function () {
-      return this.role === 'student';
-    }
+    type: String // ❌ No "required" here; handled in controller
   }
 }, {
-  timestamps: true // Optional: Adds createdAt and updatedAt fields
+  timestamps: true
 });
 
 module.exports = mongoose.model('User', userSchema);

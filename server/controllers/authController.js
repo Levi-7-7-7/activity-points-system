@@ -4,7 +4,7 @@ const Otp = require('../models/Otp');
 const jwt = require('jsonwebtoken');
 const sendOTP = require('../utils/sendOTP');
 
-// Register Step 1: Send OTP & Save temp user data
+// === STEP 1: Register and send OTP ===
 exports.register = async (req, res) => {
   try {
     const { name, email, password, role, registerNumber, rollNumber } = req.body;
@@ -14,7 +14,7 @@ exports.register = async (req, res) => {
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    await Otp.deleteMany({ email }); // Clear old OTPs
+    await Otp.deleteMany({ email }); // remove old OTPs if any
 
     await Otp.create({
       email,
@@ -31,7 +31,7 @@ exports.register = async (req, res) => {
   }
 };
 
-// Register Step 2: Verify OTP and Create Account
+// === STEP 2: Verify OTP and Create User ===
 exports.verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -56,12 +56,13 @@ exports.verifyOtp = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = new User({
       name,
       email,
       password: hashedPassword,
       role,
-      ...(role === 'student' && { registerNumber, rollNumber })
+      ...(role === 'student' && { registerNumber, rollNumber }) // spread only for students
     });
 
     await user.save();
@@ -74,7 +75,7 @@ exports.verifyOtp = async (req, res) => {
   }
 };
 
-// Login
+// === LOGIN (Password-based) ===
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
