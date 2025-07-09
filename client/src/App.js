@@ -20,6 +20,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} /> {/* ✅ Add this */}
         <Route path="/register" element={<Register />} />
         <Route path="/upload" element={<Upload />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -30,6 +31,7 @@ function App() {
         <Route path="/tutor/students" element={<StudentList />} />
         <Route path="/tutor/student/:id" element={<StudentDetail />} />
       </Routes>
+
     </Router>
   );
 }
