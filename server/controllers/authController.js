@@ -37,7 +37,11 @@ exports.verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
 
     const record = await Otp.findOne({ email, otp });
-    if (!record) return res.status(400).json({ msg: 'Invalid or expired OTP' });
+
+    // ✅ FIX: Handle missing record or missing userData safely
+    if (!record || !record.userData) {
+      return res.status(400).json({ msg: 'Invalid or expired OTP' });
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -62,7 +66,7 @@ exports.verifyOtp = async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      ...(role === 'student' && { registerNumber, rollNumber }) // spread only for students
+      ...(role === 'student' && { registerNumber, rollNumber })
     });
 
     await user.save();
@@ -70,7 +74,7 @@ exports.verifyOtp = async (req, res) => {
 
     res.status(201).json({ msg: 'User registered successfully. Please login.' });
   } catch (err) {
-    console.error('Verify OTP Error:', err);
+    console.error('Verify OTP Error:', err.message);
     res.status(500).json({ msg: 'Server error', error: err.message });
   }
 };

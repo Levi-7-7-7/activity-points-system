@@ -13,7 +13,7 @@ const sendOTP = async (email, otp) => {
     from: `"Activity Points System" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: 'Verify your email - OTP',
-    html: `<h3>Your OTP is <b>${otp}</b></h3><p>This OTP is valid for 10 minutes.</p>`,
+    html: `<h3>Your OTP is <b>${otp}</b></h3><p>This OTP is valid for 5 minutes.</p>`,
   };
 
   await transporter.sendMail(mailOptions);
