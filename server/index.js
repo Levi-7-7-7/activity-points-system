@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static certificate files (if needed)
+// Serve static certificate uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // MongoDB connection
@@ -24,12 +24,11 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/certificates', require('./routes/certificates'));
 
-// ✅ Serve React frontend from client/build
+// ✅ Serve React frontend (from client/build)
 const buildPath = path.join(__dirname, '../client/build');
 app.use(express.static(buildPath));
 
-// ✅ Catch-all for React frontend (only if path matches frontend)
-app.get(/^\/(?!api\/).*/, (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'));
 });
 
