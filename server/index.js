@@ -28,8 +28,8 @@ app.use('/api/certificates', require('./routes/certificates'));
 const buildPath = path.join(__dirname, '../client/build');
 app.use(express.static(buildPath));
 
-// ✅ Wildcard route (exclude /api)
-app.get(/^\/(?!api).*/, (req, res) => {
+// ✅ Wildcard route to serve React index.html
+app.get('*', (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'));
 });
 
@@ -38,4 +38,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
-  
